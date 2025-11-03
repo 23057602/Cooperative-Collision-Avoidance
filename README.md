@@ -39,6 +39,20 @@ sudo apt install libpcl-dev ros-$ROS_DISTRO-pcl-ros libboost-all-dev libeigen3-d
 5. Build the added packages
 6. Source your ROS installation and workspace
 7. Run any of the lunches in the cca_launch package
+
+The system can be started on the voyager with the command:
+```bash
+ros2 launch cca_launch sys.launch.py
+```
+A virtual agent with the configurable vehicle_id (defaults to param file if unspecified) can be started with the command:
+```bash
+ros2 launch cca_launch virtual.launch.py vehicle_id:=agent_name
+```
+Please note that the nodes will launch in the ROS_DOMAIN of the shell. A new domain must be exported to launch in another domain.
+```bash
+export ROS_DOMAIN_ID=2; ros2 launch cca_launch virtual.launch.py vehicle_id:=vehicle_0
+```
+
 ### Packages
 Packages in order of dependancy:
 - cca_interfaces
