@@ -1,0 +1,24 @@
+/**:
+  ros__parameters:
+    use_sim_time: false
+    subscribe_depth: false
+    subscribe_rgb: false
+    gen_depth: false
+    subscribe_scan_cloud: true
+    frame_id: base_link
+    odom_frame_id: odom
+    map_frame_id: map
+    rgbd_cameras: 0
+    approx_sync: true
+    odom_sensor_sync: true
+    queue_size: 150
+    sync_queue_size: 150
+    topic_queue_size: 10
+    Rtabmap/DetectionRate: "5.0"
+    Odom/Strategy: "1"
+    Reg/Strategy: "1"
+    Reg/Force3DoF: "true"
+    Mem/IncrementalMemory: "true"
+    localization: true
+    latch: true
+    database_path: "CCA/src/cca_launch/maps/rtabmap.db"

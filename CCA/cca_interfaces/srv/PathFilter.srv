@@ -1,0 +1,4 @@
+geometry_msgs/Point[] path
+float64 tolerance -1.0
+---
+CubicSpline[] ctrl_sq

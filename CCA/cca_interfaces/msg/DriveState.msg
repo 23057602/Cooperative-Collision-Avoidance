@@ -1,0 +1,8 @@
+std_msgs/Header header
+string child_frame_id
+CubicSpline path
+float64 heading_error
+float64 cross_track_error
+float64 in_track_error
+geometry_msgs/Pose pose
+geometry_msgs/Twist cmd_vel

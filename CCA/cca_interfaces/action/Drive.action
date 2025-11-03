@@ -1,0 +1,8 @@
+RefSeq path_reference
+---
+bool complete
+DriveState[] exec_log
+---
+float32 progress
+int64 ref_index
+int64 local_index -1

@@ -1,0 +1,2 @@
+int64 insert_index
+RefSeq ref_stack

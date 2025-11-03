@@ -1,0 +1,30 @@
+/**:
+  ros__parameters:
+    use_sim_time: false
+    resolution: 0.05
+    conflict_radius: 0.4
+    planning_margin: 0.05
+    separation_distance: 0.0
+    map_height: 0.3
+    floor_height: 0.2
+    publish_time: 0.1
+    fixed_frame: "map"
+    robot_frame: "base_link"
+    vehicle_id: "voyager"
+    controller_frequency: 20.0
+    controller_error_gain: 0.5
+    controller_speed_gain: 0.01
+    controller_follow_gain: 0.5
+    vehicle_base: 0.567
+    vehicle_steering_limit: 1.0471975512
+    vehicle_mission_speed: 0.1
+    vehicle_mission_reference_tolerance: 0.1
+    prediction_horizon: 30.0
+    forecast_frequency: 10.0
+    resolution_horizon: 40.0
+    detection_frequency: 5.0
+    replan_timeout: 5.0
+    evasive_step_time: 10.0
+    evasive_fast_speed: 0.3
+    evasive_slow_speed: 0.05
+    evasive_turn_angle: 0.524

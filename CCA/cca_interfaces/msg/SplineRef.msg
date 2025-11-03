@@ -1,0 +1,4 @@
+CubicSpline path
+float64 speed
+builtin_interfaces/Time start_time
+builtin_interfaces/Time stop_time

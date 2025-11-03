@@ -1,0 +1,7 @@
+name: agent_bridge
+from_domain: 5
+to_domain: 0
+topics:
+  predicted_trajectory:
+    type: cca_interfaces/msg/DriveForecast
+    bidirectional: True
