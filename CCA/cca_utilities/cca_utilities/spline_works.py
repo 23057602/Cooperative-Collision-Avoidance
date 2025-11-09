@@ -2,6 +2,7 @@
 import numpy as np
 from numpy.polynomial import Polynomial
 import scipy.integrate as integrate
+from scipy.optimize import minimize
 
 #https://stackoverflow.com/questions/2742610/closest-point-on-a-cubic-bezier-curve/57315396#57315396
 class Spline:
@@ -65,19 +66,37 @@ class Spline_make:
         p1 = radius*np.array([quad[0]*(np.sin(angle + yaw) - np.sin(yaw)), quad[1]*(np.cos(yaw) - np.cos(angle + yaw))]) + np.array(pos)
         return [pos, [quad[0]*k*np.cos(yaw), quad[1]*k*np.sin(yaw)], p1.tolist(), [quad[0]*k*np.cos(angle + yaw), quad[1]*k*np.sin(angle + yaw)]]
     
-    def fromPoints(point_col: list[list[float]], sp_char_mtx: list[list[float]]):
-        t_1_to_n = np.array([*range(1,len(point_col))])/(len(point_col)-1)
-        T_list = [[1, 0, 0, 0]]
-        for val in t_1_to_n:
-            T_list += [[1, val, val**2, val**3]]
-        T = np.array(T_list)
+    def _fromPointsLSE(point_col: list[list[float]], sp_char_mtx: list[list[float]]):
+        T = np.array([[1, val, val**2, val**3] for val in np.array([*range(0,len(point_col))])/(len(point_col)-1)])
         return (np.linalg.inv(np.array(sp_char_mtx)) @ np.linalg.inv(T.T @ T) @ T.T @ np.array(point_col)).tolist()
+
+    def _D_sq(param_Vec, point_Mtx):
+        P = [Polynomial(coeffs) for coeffs in np.reshape(np.array(param_Vec[len(point_Mtx):]),(4,int((len(param_Vec)-len(point_Mtx))/4)), order='F').T]
+        D2 = np.sum(np.square([P_j[0](np.array(param_Vec[:len(point_Mtx)])) - P_j[1] for P_j in zip(P,np.array(point_Mtx).T)]))
+        return D2
+
+    def _D_sq_Jac(param_Vec, point_Mtx):
+        P = [Polynomial(coeffs) for coeffs in np.reshape(np.array(param_Vec[len(point_Mtx):]),(4,int((len(param_Vec)-len(point_Mtx))/4)), order='F').T]
+        dD_dt = np.sum([2 * P_j[0].deriv()(np.array(param_Vec[:len(point_Mtx)])) * (P_j[0](np.array(param_Vec[:len(point_Mtx)])) - P_j[1]) for P_j in zip(P,np.array(point_Mtx).T)],axis=0)
+        dD_da = np.reshape([[2 * np.sum(dx2p * np.power(np.array(param_Vec[:len(point_Mtx)]),k)) for k in range(4)] for dx2p in np.array([P_j[0](np.array(param_Vec[:len(point_Mtx)])) - P_j[1] for P_j in zip(P,np.array(point_Mtx).T)])],-1)
+        dD_dX = dD_dt.tolist() + dD_da.tolist()
+        return dD_dX
+    
+    def fromPoints(point_col: list[list[float]], sp_char_mtx: list[list[float]], method=None, tol=1e-9):
+        init_est = Spline_make._fromPointsLSE(point_col,sp_char_mtx)
+        X = [i/(len(point_col)-1) for i in range(len(point_col))] + np.reshape(np.array(sp_char_mtx) @ np.array(init_est), -1, order='F').tolist()
+        if method == 'BFGS':
+            res = minimize(Spline_make._D_sq, X, args=(point_col), method='BFGS', jac=Spline_make._D_sq_Jac, options={'disp': False})
+            return (np.linalg.inv(np.array(sp_char_mtx)) @ np.reshape(np.array(res.x[len(point_col):]),(4,int((len(res.x)-len(point_col))/4)), order='F')).tolist()
+        elif method == 'SLSQP':
+            cons_ieq = {'type': 'ineq', 'fun' : lambda x, pts=len(point_col): np.array([x[i] - x[i-1] for i in range(1,pts)] + [x[i] * (1.0 - x[i]) for i in range(0,pts)])}
+            res = minimize(Spline_make._D_sq, X, args=(point_col), method='SLSQP', jac=Spline_make._D_sq_Jac, constraints=[cons_ieq], options={'ftol': tol, 'disp': False})
+            return (np.linalg.inv(np.array(sp_char_mtx)) @ np.reshape(np.array(res.x[len(point_col):]),(4,int((len(res.x)-len(point_col))/4)), order='F')).tolist()
+        else:
+            return init_est
     
     def point_error(pnt_lst: list[list[float]], spl):
-        errors = []
-        for pnt in pnt_lst:
-            errors += [np.sqrt(np.sum(np.square(np.array(spl(spl.getClosestT(pnt))) - np.array(pnt))))]
-        return errors
+        return [np.sqrt(np.sum(np.square(np.array(spl(spl.getClosestT(pnt))) - np.array(pnt)))) for pnt in pnt_lst]
 
     def search_tol_arg(pnt_lst: list[list[float]], sp_char_mtx: list[list[float]], tol: float):
         total_control = Spline_make.fromPoints(pnt_lst, sp_char_mtx)
