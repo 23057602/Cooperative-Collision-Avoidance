@@ -53,3 +53,4 @@ CATKIN_IGNORE
 # WSL2
 *.Identifier
 .vscode/
+*.ipynb
