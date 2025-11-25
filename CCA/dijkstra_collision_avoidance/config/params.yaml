@@ -1,0 +1,18 @@
+/**:
+  ros__parameters:
+    use_sim_time: false
+    resolution: 0.05
+    conflict_radius: 0.4
+    planning_margin: 0.05
+    separation_distance: 0.0
+    map_height: 0.3
+    floor_height: 0.2
+    fixed_frame: "map"
+    robot_frame: "base_link"
+    vehicle_id: "voyager"
+    resolution_horizon: 40.0
+    replan_timeout: 5.0
+    evasive_step_time: 10.0
+    evasive_turn_angle: 0.524
+    forecast_frequency: 10.0
+    prediction_horizon: 30.0

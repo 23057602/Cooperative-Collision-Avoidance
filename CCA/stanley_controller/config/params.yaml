@@ -1,0 +1,11 @@
+/**:
+  ros__parameters:
+    use_sim_time: false
+    controller_frequency: 20.0
+    controller_error_gain: 0.5
+    controller_speed_gain: 0.01
+    controller_follow_gain: 0.5
+    vehicle_base: 0.567
+    steering_limit: 1.0471975512
+    top_speed: 0.3
+    crawl_speed: 0.05
